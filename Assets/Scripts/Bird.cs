@@ -4,39 +4,49 @@ using UnityEngine;
 
 public class Bird : MonoBehaviour
 {
-  public const float gravity = 15f;
-  public GameObject lookUp;
-
   private CharacterController controller;
   private Animator animator;
+
+  private const float gravity = 15f;
+  private const float flappingVelocity = 8f;
   private Vector3 velocity = new Vector3(0, 0, 0);
 
+  public GameObject lookAtPoint;
+
+
+  // Start is called before the first frame update
   void Start()
   {
-    controller = gameObject.GetComponent<CharacterController>();
-    animator = gameObject.GetComponent<Animator>();
+    controller = GetComponent<CharacterController>();
+    animator = GetComponent<Animator>();
   }
 
+  // Update is called once per frame
   void Update()
   {
+    // Make bird fall
     velocity.y -= gravity * Time.deltaTime;
 
+    // On pressing spacebar, make bird fly
     if (Input.GetKeyDown("space"))
     {
-      velocity.y = 8f;
+      velocity.y = flappingVelocity;
+
+      // Flap bird's wings
       animator.Play("Wings|flapping");
-      StartCoroutine(WaitThenPlayDefaultAnim());
-      gameObject.transform.LookAt(lookUp.transform);
+
+      // Lift bird head when flapping
+      transform.LookAt(lookAtPoint.transform);
+      StartCoroutine(WaitThenResetRotation());
     }
 
     controller.Move(velocity * Time.deltaTime);
   }
 
-  private IEnumerator WaitThenPlayDefaultAnim()
+  IEnumerator WaitThenResetRotation()
   {
     yield return new WaitForSeconds(0.5f);
-    animator.Play("Wings|flying");
-    gameObject.transform.LookAt(new Vector3(0, transform.position.y, transform.position.z + 10));
+
+    transform.eulerAngles = new Vector3(0, 0, 0);
   }
 }
-
