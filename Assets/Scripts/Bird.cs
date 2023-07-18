@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Bird : MonoBehaviour
 {
+  public GameObject lookAtPoint;
+
   private CharacterController controller;
   private Animator animator;
 
@@ -11,17 +13,13 @@ public class Bird : MonoBehaviour
   private const float flappingVelocity = 8f;
   private Vector3 velocity = new Vector3(0, 0, 0);
 
-  public GameObject lookAtPoint;
 
-
-  // Start is called before the first frame update
   void Start()
   {
     controller = GetComponent<CharacterController>();
     animator = GetComponent<Animator>();
   }
 
-  // Update is called once per frame
   void Update()
   {
     // Make bird fall
