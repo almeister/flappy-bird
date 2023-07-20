@@ -6,45 +6,46 @@ public class Bird : MonoBehaviour
 {
   public GameObject lookAtPoint;
 
-  private CharacterController controller;
-  private Animator animator;
+  private CharacterController _controller;
+  private Animator _animator;
 
-  private const float gravity = 15f;
-  private const float flappingVelocity = 8f;
-  private Vector3 velocity = new Vector3(0, 0, 0);
-
+  private const float _gravity = 15f;
+  private const float _velocityBoost = 8f;
+  private Vector3 _velocity = new Vector3(0, 0, 0);
 
   void Start()
   {
-    controller = GetComponent<CharacterController>();
-    animator = GetComponent<Animator>();
+    _controller = GetComponent<CharacterController>();
+    _animator = GetComponent<Animator>();
   }
 
   void Update()
   {
     // Make bird fall
-    velocity.y -= gravity * Time.deltaTime;
+    _velocity.y -= _gravity * Time.deltaTime;
 
     // On pressing spacebar, make bird fly
     if (Input.GetKeyDown("space"))
     {
-      velocity.y = flappingVelocity;
+      _velocity.y = _velocityBoost;
 
       // Flap bird's wings
-      animator.Play("Wings|flapping");
-
-      // Lift bird head when flapping
-      transform.LookAt(lookAtPoint.transform);
-      StartCoroutine(WaitThenResetRotation());
+      _animator.SetTrigger("Flap");
     }
 
-    controller.Move(velocity * Time.deltaTime);
+    _controller.Move(_velocity * Time.deltaTime);
   }
 
-  IEnumerator WaitThenResetRotation()
+  public void OnFlappingStart()
   {
-    yield return new WaitForSeconds(0.5f);
+    // Tilt bird when flapping
+    transform.LookAt(lookAtPoint.transform);
+  }
 
+  public void OnFlappingFinish()
+  {
+    // Untilt bird after flapping finishes
     transform.eulerAngles = new Vector3(0, 0, 0);
   }
 }
+
