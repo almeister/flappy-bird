@@ -3,53 +3,48 @@ using UnityEngine;
 
 public class Bird : MonoBehaviour
 {
-  public const float gravity = 15f;
-  public GameObject lookUp;
+  public GameObject lookAtPoint;
 
-  private CharacterController controller;
-  private Animator animator;
-  private Vector3 velocity = new Vector3(0, 0, 0);
-  private const float flappingVelocity = 8f;
-  private Quaternion lookingForwardRotation;
-  private Quaternion lookingUpRotation;
-  private const float flappingPeriod = 0.5f;
-  private float flappingTimeElapsed = 0;
+  private CharacterController _controller;
+  private Animator _animator;
+
+  private const float _gravity = 15f;
+  private const float _velocityBoost = 8f;
+  private Vector3 _velocity = new Vector3(0, 0, 0);
 
   void Start()
   {
-    controller = gameObject.GetComponent<CharacterController>();
-    animator = gameObject.GetComponent<Animator>();
-    lookingForwardRotation = transform.rotation;
+    _controller = GetComponent<CharacterController>();
+    _animator = GetComponent<Animator>();
   }
 
   void Update()
   {
-    velocity.y -= gravity * Time.deltaTime;
+    // Make bird fall
+    _velocity.y -= _gravity * Time.deltaTime;
 
+    // On pressing spacebar, make bird fly
     if (Input.GetKeyDown("space"))
     {
-      velocity.y = flappingVelocity;
-      animator.Play("Wings|flapping");
+      _velocity.y = _velocityBoost;
 
-      flappingTimeElapsed = 0f;
-      // Get looking up rotation
-      lookingUpRotation = Quaternion.LookRotation(lookUp.transform.position - transform.position);
-
-      StartCoroutine(WaitThenPlayDefaultAnim());
-      gameObject.transform.LookAt(lookUp.transform);
+      // Flap bird's wings
+      _animator.SetTrigger("Flap");
     }
 
-    flappingTimeElapsed += Time.deltaTime;
-    // SLERP between the quaternions
-    transform.rotation = Quaternion.Slerp(lookingUpRotation, lookingForwardRotation, flappingTimeElapsed / flappingPeriod);
-
-    controller.Move(velocity * Time.deltaTime);
+    _controller.Move(_velocity * Time.deltaTime);
   }
 
-  private IEnumerator WaitThenPlayDefaultAnim()
+  public void OnFlappingStart()
   {
-    yield return new WaitForSeconds(flappingPeriod);
-    animator.Play("Wings|flying");
+    // Tilt bird when flapping
+    transform.LookAt(lookAtPoint.transform);
+  }
+
+  public void OnFlappingFinish()
+  {
+    // Untilt bird after flapping finishes
+    transform.eulerAngles = new Vector3(0, 0, 0);
   }
 }
 
