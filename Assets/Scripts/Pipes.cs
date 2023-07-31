@@ -14,10 +14,22 @@ public class Pipes : MonoBehaviour
   public GameObject pipesPrefab;
   public float pipesSpeed;
 
+  private float _initialPipesSpeed;
   private GameObject[] pipesContainers;
+
+  public void StopMovement()
+  {
+    pipesSpeed = 0f;
+  }
+
+  public void StartMovement()
+  {
+    pipesSpeed = _initialPipesSpeed;
+  }
 
   void Start()
   {
+    _initialPipesSpeed = pipesSpeed;
     createPipes();
   }
 
@@ -45,19 +57,19 @@ public class Pipes : MonoBehaviour
 
       // Give random vertical spacing
       PlacePipes("pipes/Pipe-T", pipePair, yMaxTopPipe, yMinTopPipe);
-      PlacePipes("pipes/Pipe-B", pipePair, yMaxBottomPipe, yMinBottomPipe);
+      PlacePipes("pipes/Pipe-B", pipePair, yMaxTopPipe, yMinTopPipe);
     }
   }
 
   private void PlacePipes(string pipeName, GameObject pipePair, float yMin, float yMax)
   {
-    float yTopPipe = Random.Range(yMin, yMax);
-    Vector3 topPipeLocalPos = new Vector3(0, yTopPipe, 0);
+    float yPipe = Random.Range(yMin, yMax);
+    Vector3 topPipeLocalPos = new Vector3(0, yPipe, 0);
 
     Transform topPipe = pipePair.transform.Find(pipeName);
     if (topPipe == null)
     {
-      Debug.LogError("Could not find top pipe.");
+      Debug.LogError("Could not find a pipe.");
       return;
     }
 

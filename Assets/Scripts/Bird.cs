@@ -11,11 +11,15 @@ public class Bird : MonoBehaviour
   private const float _gravity = 15f;
   private const float _velocityBoost = 8f;
   private Vector3 _velocity = new Vector3(0, 0, 0);
+  private bool _crashed = false;
+
+  private GameObject _pipesFactory;
 
   void Start()
   {
     _controller = GetComponent<CharacterController>();
     _animator = GetComponent<Animator>();
+    _pipesFactory = GameObject.Find("PipesFactory");
   }
 
   void Update()
@@ -24,7 +28,7 @@ public class Bird : MonoBehaviour
     _velocity.y -= _gravity * Time.deltaTime;
 
     // On pressing spacebar, make bird fly
-    if (Input.GetKeyDown("space"))
+    if (!_crashed && Input.GetKeyDown("space"))
     {
       _velocity.y = _velocityBoost;
 
@@ -37,16 +41,22 @@ public class Bird : MonoBehaviour
 
   void OnTriggerEnter(Collider other)
   {
-    Debug.Log("Bird collision.");
+    Debug.Log($"Bird collided with {other.name}");
 
-    // Check if hit a pipe
-    if (other.CompareTag("pipe"))
+    if (other.tag == "pipe")
     {
-      // Kill bird
-      Debug.Log("Birdie done died.");
+      Debug.Log("Bird crashed.");
+      _crashed = true;
 
+      // Rotate bird downwards
+      transform.eulerAngles = new Vector3(60f, 0f, 0f);
+
+      // Drop bird
+      _velocity.y = 0f;
+
+      // Pause pipe movement
+      _pipesFactory.GetComponent<Pipes>().StopMovement();
     }
-
   }
 
   public void OnFlappingStart()

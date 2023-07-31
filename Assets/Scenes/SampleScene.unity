@@ -234,15 +234,15 @@ CharacterController:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Height: 0.5
-  m_Radius: 0.25
+  m_Height: 0
+  m_Radius: 0.2
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
---- !u!135 &474658140
-SphereCollider:
+--- !u!136 &474658142
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -251,9 +251,10 @@ SphereCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.25
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Radius: 0.28
+  m_Height: 0.77
+  m_Direction: 2
+  m_Center: {x: 0, y: 0, z: 0.07}
 --- !u!1 &615137334
 GameObject:
   m_ObjectHideFlags: 0
@@ -455,8 +456,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: -0.0082530705, y: -0.72588634, z: -0.008711459, w: 0.6877101}
-  m_LocalPosition: {x: 7.9060764, y: -0.51167536, z: 6.890364}
+  m_LocalRotation: {x: -0.046825714, y: -0.7180807, z: -0.04854565, w: 0.6926838}
+  m_LocalPosition: {x: 8.582857, y: -0.4138003, z: 5.200012}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
