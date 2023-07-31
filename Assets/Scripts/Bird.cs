@@ -35,6 +35,20 @@ public class Bird : MonoBehaviour
     _controller.Move(_velocity * Time.deltaTime);
   }
 
+  void OnTriggerEnter(Collider other)
+  {
+    Debug.Log("Bird collision.");
+
+    // Check if hit a pipe
+    if (other.CompareTag("pipe"))
+    {
+      // Kill bird
+      Debug.Log("Birdie done died.");
+
+    }
+
+  }
+
   public void OnFlappingStart()
   {
     // Tilt bird when flapping
