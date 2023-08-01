@@ -12,6 +12,8 @@ public class Pipes : MonoBehaviour
   public float yMinBottomPipe = 0f;
 
   public GameObject pipesPrefab;
+  public int pipesCount = 10;
+  public GameObject pipesRecyclePoint;
   public float pipesSpeed;
 
   private float _initialPipesSpeed;
@@ -39,25 +41,32 @@ public class Pipes : MonoBehaviour
     // Move pipes towards player
     for (int i = 0; i < pipesContainers.Length; i++)
     {
-      pipesContainers[i].transform.position -= new Vector3(0, 0, pipesSpeed * Time.deltaTime);
+      // Recycle pipe if it has reached the off-screen point recycle point
+      if (pipesContainers[i].transform.position.z <= pipesRecyclePoint.transform.position.z)
+      {
+        pipesContainers[i].transform.localPosition += pipesCount * new Vector3(0, 0, horizontalSpacing);
+      }
+
+      pipesContainers[i].transform.localPosition -= new Vector3(0, 0, pipesSpeed * Time.deltaTime);
     }
   }
 
   private void createPipes()
   {
-    pipesContainers = new GameObject[5];
-    Vector3 nextPipePos = transform.position;
+    pipesContainers = new GameObject[pipesCount];
+    Vector3 nextPipePos = new Vector3();
     for (int i = 0; i < pipesContainers.Length; ++i)
     {
       pipesContainers[i] = GameObject.Instantiate(pipesPrefab);
       GameObject pipePair = pipesContainers[i];
+      pipePair.transform.SetParent(transform);
 
       nextPipePos.z += horizontalSpacing;
-      pipePair.transform.position = nextPipePos;
+      pipePair.transform.localPosition = nextPipePos;
 
       // Give random vertical spacing
-      PlacePipes("pipes/Pipe-T", pipePair, yMaxTopPipe, yMinTopPipe);
-      PlacePipes("pipes/Pipe-B", pipePair, yMaxTopPipe, yMinTopPipe);
+      PlacePipes("pipes/Pipe-T", pipePair, yMinTopPipe, yMaxTopPipe);
+      PlacePipes("pipes/Pipe-B", pipePair, yMinBottomPipe, yMaxBottomPipe);
     }
   }
 
@@ -69,7 +78,7 @@ public class Pipes : MonoBehaviour
     Transform topPipe = pipePair.transform.Find(pipeName);
     if (topPipe == null)
     {
-      Debug.LogError("Could not find a pipe.");
+      Debug.LogError($"Could not find a pipe with tag {pipeName}");
       return;
     }
 

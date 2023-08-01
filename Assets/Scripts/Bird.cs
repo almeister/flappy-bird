@@ -5,11 +5,12 @@ public class Bird : MonoBehaviour
 {
   public GameObject lookAtPoint;
 
+  public float velocityBoost = 6f;
+
   private CharacterController _controller;
   private Animator _animator;
 
   private const float _gravity = 15f;
-  private const float _velocityBoost = 8f;
   private Vector3 _velocity = new Vector3(0, 0, 0);
   private bool _crashed = false;
 
@@ -30,7 +31,7 @@ public class Bird : MonoBehaviour
     // On pressing spacebar, make bird fly
     if (!_crashed && Input.GetKeyDown("space"))
     {
-      _velocity.y = _velocityBoost;
+      _velocity.y = velocityBoost;
 
       // Flap bird's wings
       _animator.SetTrigger("Flap");
@@ -41,8 +42,6 @@ public class Bird : MonoBehaviour
 
   void OnTriggerEnter(Collider other)
   {
-    Debug.Log($"Bird collided with {other.name}");
-
     if (other.tag == "pipe")
     {
       Debug.Log("Bird crashed.");
