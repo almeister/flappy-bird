@@ -7,7 +7,6 @@ public class Bird : MonoBehaviour
 
   public float velocityBoost = 6f;
 
-  private CharacterController _controller;
   private Animator _animator;
 
   private const float _gravity = 15f;
@@ -18,13 +17,14 @@ public class Bird : MonoBehaviour
 
   void Start()
   {
-    _controller = GetComponent<CharacterController>();
     _animator = GetComponent<Animator>();
     _pipesFactory = GameObject.Find("PipesFactory");
   }
 
   void Update()
   {
+    _animator.enabled = !_crashed;
+
     // Make bird fall
     _velocity.y -= _gravity * Time.deltaTime;
 
@@ -37,7 +37,7 @@ public class Bird : MonoBehaviour
       _animator.SetTrigger("Flap");
     }
 
-    _controller.Move(_velocity * Time.deltaTime);
+    transform.Translate(_velocity * Time.deltaTime, Space.World);
   }
 
   void OnTriggerEnter(Collider other)
@@ -51,6 +51,7 @@ public class Bird : MonoBehaviour
       transform.eulerAngles = new Vector3(60f, 0f, 0f);
 
       // Drop bird
+      transform.Translate(transform.right + new Vector3(2, 0, 0), Space.World);
       _velocity.y = 0f;
 
       // Pause pipe movement
