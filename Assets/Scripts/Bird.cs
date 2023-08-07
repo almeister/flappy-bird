@@ -32,7 +32,8 @@ public class Bird : MonoBehaviour
       _animator.SetTrigger("Flap");
     }
 
-    _controller.Move(_velocity * Time.deltaTime);
+    // _controller.Move(_velocity * Time.deltaTime);
+    transform.Translate(_velocity * Time.deltaTime, Space.World);
   }
 
   public void OnFlappingStart()
