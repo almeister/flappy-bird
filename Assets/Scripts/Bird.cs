@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -5,7 +6,6 @@ public class Bird : MonoBehaviour
 {
   public GameObject lookAtPoint;
 
-  private CharacterController _controller;
   private Animator _animator;
 
   private const float _gravity = 15f;
@@ -14,7 +14,6 @@ public class Bird : MonoBehaviour
 
   void Start()
   {
-    _controller = GetComponent<CharacterController>();
     _animator = GetComponent<Animator>();
   }
 
@@ -32,7 +31,8 @@ public class Bird : MonoBehaviour
       _animator.SetTrigger("Flap");
     }
 
-    _controller.Move(_velocity * Time.deltaTime);
+    // _controller.Move(_velocity * Time.deltaTime);
+    transform.Translate(_velocity * Time.deltaTime, Space.World);
   }
 
   public void OnFlappingStart()
