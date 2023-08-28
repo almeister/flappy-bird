@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Pipes : MonoBehaviour
 {
-  public GameObject pipeContainerPrefab;
   public GameObject pipesRecyclePoint;
 
   public float yTopPipeMax;
@@ -16,58 +15,34 @@ public class Pipes : MonoBehaviour
   public float pipeSpeed = 5;
   public float horizontalSpacing = 5;
 
-  private int pipesCount = 5;
-
-  private GameObject[] _pipeContainers;
-
   void Start()
   {
-    CreatePipes();
+    foreach (Transform child in transform)
+    {
+      PlacePipesVertically(child);
+    }
   }
 
   void Update()
   {
-    // For each pipe pair
-    for (int i = 0; i < _pipeContainers.Length; i++)
+    foreach (Transform child in transform)
     {
-      // Move pipes towards player
-      GameObject pipeContainer = _pipeContainers[i];
-      pipeContainer.transform.localPosition -= new Vector3(0, 0, pipeSpeed * Time.deltaTime);
+      Debug.Log($"Child name: {child.name}");
 
-      // Recycle pipe if it has reached the off-screen recycle point
-      if (pipeContainer.transform.position.z <= pipesRecyclePoint.transform.position.z)
+      child.localPosition -= new Vector3(0, 0, pipeSpeed * Time.deltaTime);
+
+      if (child.position.z <= pipesRecyclePoint.transform.position.z)
       {
-        pipeContainer.transform.localPosition += pipesCount * new Vector3(0, 0, horizontalSpacing);
+        child.localPosition += transform.childCount * new Vector3(0, 0, horizontalSpacing);
+        PlacePipesVertically(child);
       }
     }
-
-
-
   }
 
-  private void CreatePipes()
+  private void PlacePipesVertically(Transform child)
   {
-    // Create array of pipe pair containers
-    _pipeContainers = new GameObject[pipesCount];
-
-    Vector3 nextPipePos = new Vector3();
-    for (int i = 0; i < _pipeContainers.Length; i++)
-    {
-      // Create a new pipe container GameObject from prefab
-      _pipeContainers[i] = GameObject.Instantiate(pipeContainerPrefab);
-      GameObject pipeContainer = _pipeContainers[i];
-
-      // Set the PipesFactory to be it's parent
-      pipeContainer.transform.SetParent(transform);
-
-      // Set the horizontal location of the pipe behind the last one
-      pipeContainer.transform.localPosition = nextPipePos;
-      nextPipePos.z += horizontalSpacing;
-
-      // Set the vertical spacing of the pipes randomly
-      PlacePipeVertically("pipes/Pipe_T", pipeContainer, yTopPipeMin, yTopPipeMax);
-      PlacePipeVertically("pipes/Pipe_B", pipeContainer, yBottomPipeMin, yBottomPipeMax);
-    }
+    PlacePipeVertically("pipes/Pipe_T", child.gameObject, yTopPipeMin, yTopPipeMax);
+    PlacePipeVertically("pipes/Pipe_B", child.gameObject, yBottomPipeMin, yBottomPipeMax);
   }
 
   private void PlacePipeVertically(string pipeName, GameObject pipeContainer, float yMin, float yMax)
