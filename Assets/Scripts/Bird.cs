@@ -1,16 +1,21 @@
 using System;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Bird : MonoBehaviour
 {
-  public GameObject lookAtPoint;
+  [SerializeField] GameObject lookAtPoint;
+  [SerializeField] GameObject pipesFactory;
+  [SerializeField] GameObject scenery;
 
   private Animator _animator;
 
   private const float _gravity = 15f;
   private const float _velocityBoost = 8f;
   private Vector3 _velocity = new Vector3(0, 0, 0);
+
+  private bool _birdAlive = true;
 
   void Start()
   {
@@ -23,7 +28,7 @@ public class Bird : MonoBehaviour
     _velocity.y -= _gravity * Time.deltaTime;
 
     // On pressing spacebar, make bird fly
-    if (Input.GetKeyDown("space"))
+    if (_birdAlive && Input.GetKeyDown("space"))
     {
       _velocity.y = _velocityBoost;
 
@@ -31,7 +36,6 @@ public class Bird : MonoBehaviour
       _animator.SetTrigger("Flap");
     }
 
-    // _controller.Move(_velocity * Time.deltaTime);
     transform.Translate(_velocity * Time.deltaTime, Space.World);
   }
 
@@ -45,6 +49,24 @@ public class Bird : MonoBehaviour
   {
     // Untilt bird after flapping finishes
     transform.eulerAngles = new Vector3(0, 0, 0);
+  }
+
+  private void OnTriggerEnter(Collider other)
+  {
+    Debug.Log($"Bird crashed into: {other.name}");
+    if (other.tag == "Pipe")
+    {
+      // Drop bird
+      _animator.enabled = false;
+      _birdAlive = false;
+      _velocity = Vector3.zero;
+      transform.Translate(new Vector3(2f, 0, 0), Space.World);
+      transform.Rotate(0, 0, -45f);
+
+      // Stop pipes and scenery movement
+      pipesFactory.GetComponent<Pipes>().stop();
+      scenery.GetComponent<Scenery>().stop();
+    }
   }
 }
 

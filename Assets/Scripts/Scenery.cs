@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
@@ -9,6 +10,7 @@ public class Scenery : MonoBehaviour
   [SerializeField] GameObject sceneryRecyclePoint;
 
   private Vector3 _initialPosition;
+  private bool _movementEnabled = true;
 
   // Start is called before the first frame update
   void Start()
@@ -19,10 +21,19 @@ public class Scenery : MonoBehaviour
   // Update is called once per frame
   void Update()
   {
-    transform.position -= new Vector3(0, 0, speed * Time.deltaTime);
-    if (transform.position.z <= sceneryRecyclePoint.transform.position.z)
+    if (_movementEnabled)
     {
-      transform.position = _initialPosition;
+      transform.position -= new Vector3(0, 0, speed * Time.deltaTime);
+      if (transform.position.z <= sceneryRecyclePoint.transform.position.z)
+      {
+        transform.position = _initialPosition;
+      }
+
     }
+  }
+
+  public void stop()
+  {
+    _movementEnabled = false;
   }
 }

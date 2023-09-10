@@ -15,6 +15,8 @@ public class Pipes : MonoBehaviour
   public float pipeSpeed = 5;
   public float horizontalSpacing = 5;
 
+  private bool _movementEnabled = true;
+
   void Start()
   {
     foreach (Transform child in transform)
@@ -25,18 +27,26 @@ public class Pipes : MonoBehaviour
 
   void Update()
   {
-    foreach (Transform child in transform)
+    if (_movementEnabled)
     {
-      Debug.Log($"Child name: {child.name}");
-
-      child.localPosition -= new Vector3(0, 0, pipeSpeed * Time.deltaTime);
-
-      if (child.position.z <= pipesRecyclePoint.transform.position.z)
+      foreach (Transform child in transform)
       {
-        child.localPosition += transform.childCount * new Vector3(0, 0, horizontalSpacing);
-        PlacePipesVertically(child);
+        child.localPosition -= new Vector3(0, 0, pipeSpeed * Time.deltaTime);
+        // child.localPosition -= new Vector3(0, 0, 0.1f);
+
+        if (child.position.z <= pipesRecyclePoint.transform.position.z)
+        {
+          child.localPosition += transform.childCount * new Vector3(0, 0, horizontalSpacing);
+          PlacePipesVertically(child);
+        }
       }
+
     }
+  }
+
+  public void stop()
+  {
+    _movementEnabled = false;
   }
 
   private void PlacePipesVertically(Transform child)
